@@ -14,10 +14,42 @@ datasource db {
 }
 
 model User {
-  username String  @id @db.VarChar(100)
-  password String  @db.VarChar(100)
-  name     String  @db.VarChar(100)
-  token    String? @db.VarChar(100)
+  user_id    Int       @id @default(autoincrement())
+  username   String    @db.VarChar(100)
+  password   String    @db.VarChar(100)
+  name       String    @db.VarChar(100)
+  token      String?   @db.VarChar(100)
+  group_id   Int       @db.Int()
+  group      Group     @relation(fields: [group_id], references: [group_id])
+  created_at DateTime  @db.DateTime()
+  updated_at DateTime  @db.DateTime()
+  address    Address[]
 
   @@map("users")
+}
+
+model Group {
+  group_id   Int      @id @default(autoincrement())
+  group_name String   @db.VarChar(50)
+  created_at DateTime @db.DateTime()
+  updated_at DateTime @db.DateTime()
+  user       User[]
+
+  @@map("groups")
+}
+
+model Address {
+  address_id  Int      @id @default(autoincrement())
+  is_main     Int?     @default(0)
+  street      String   @db.VarChar(255)
+  city        String   @db.VarChar(100)
+  province    String   @db.VarChar(100)
+  country     String   @db.VarChar(100)
+  postal_code String   @db.VarChar(10)
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [user_id])
+  created_at  DateTime @db.DateTime()
+  updated_at  DateTime @db.DateTime()
+
+  @@map("addresses")
 }
